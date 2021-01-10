@@ -34,7 +34,7 @@ echo ==============================
 
 echo deploy lambda
 cd ../yy-zodiac-lambda
-npm run deploy:prod
+npm run deploy:$1
 echo ==============================
 
 echo deploy cloudfront
