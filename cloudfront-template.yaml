@@ -1,16 +1,27 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  TargetEnvr:
+    Type: String
+    AllowedValues:
+      - dev
+      - prod
+  ProjectName:
+    Type: String
+    AllowedValues:
+      - yy-aquarius
+      - yy-cancer
 Resources:
   CloudFrontOriginAccessIdentity:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
     Properties:
       CloudFrontOriginAccessIdentityConfig:
-        Comment: yy-aquarius-OAI
+        Comment: !Sub ${ProjectName}-${TargetEnvr}-OAI
   CloudFrontDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
         Origins:
-        - DomainName: yy-aquarius.s3.amazonaws.com
+        - DomainName: !Sub ${ProjectName}-${TargetEnvr}.s3.ap-northeast-1.amazonaws.com
           Id: S3-hosted-website-ID
           S3OriginConfig:
               OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
@@ -37,6 +48,9 @@ Resources:
             Cookies:
               Forward: none
           ViewerProtocolPolicy: redirect-to-https
+          DefaultTTL: 0
+          MinTTL: 0
+          MaxTTL: 0
         PriceClass: PriceClass_200
         ViewerCertificate:
           CloudFrontDefaultCertificate: 'true'

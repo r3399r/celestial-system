@@ -22,21 +22,24 @@ if [ $2 != "yy-aquarius" ] &&
     exit 1
 fi
 
-echo ==============================
+echo ==================================================================================
 echo env: $1
 echo project: $2
-echo ==============================
+echo ==================================================================================
 
 echo deploy web to s3...
 cd ../$2
-npm run deploy
-echo ==============================
+npm run deploy:$1
+echo ==================================================================================
 
-echo deploy lambda
+echo deploy lambda...
 cd ../yy-zodiac-lambda
 npm run deploy:$1
-echo ==============================
+echo ==================================================================================
 
-echo deploy cloudfront
-npm run package:cloudfront
-npm run deploy:cloudfront -- ProjectName=$2
+echo deploy cloudfront...
+cd ../yy-zodiac-system
+aws cloudformation package --template-file cloudfront-template.yaml --output-template-file packaged.yaml --s3-bucket y-cf-midway
+aws cloudformation deploy --template-file packaged.yaml --stack-name $2-$1-stack --parameter-overrides ProjectName=$2 TargetEnvr=$1
+# npm run package:cloudfront
+# npm run deploy:cloudfront -- --stack-name $2-$1-stack --parameter-overrides ProjectName=$2
