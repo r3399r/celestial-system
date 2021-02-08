@@ -41,5 +41,3 @@ echo deploy cloudfront...
 cd ../yy-zodiac-system
 aws cloudformation package --template-file cloudfront-template.yaml --output-template-file packaged.yaml --s3-bucket y-cf-midway
 aws cloudformation deploy --template-file packaged.yaml --stack-name $2-$1-stack --parameter-overrides ProjectName=$2 TargetEnvr=$1
-# npm run package:cloudfront
-# npm run deploy:cloudfront -- --stack-name $2-$1-stack --parameter-overrides ProjectName=$2
