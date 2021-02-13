@@ -15,8 +15,8 @@ if [ $1 != "dev" ] && [ $1 != "prod" ]
 fi
 
 
-if [ $2 != "yy-aquarius" ] && 
-   [ $2 != "yy-cancer" ]
+if [ $2 != "sadalsuud" ] && 
+   [ $2 != "altarf" ]
   then
     echo "project does not exist"
     exit 1
@@ -33,11 +33,11 @@ npm run deploy:$1
 echo ==================================================================================
 
 echo deploy lambda...
-cd ../yy-zodiac-lambda
+cd ../celestial-service
 npm run deploy:$1
 echo ==================================================================================
 
 echo deploy cloudfront...
-cd ../yy-zodiac-system
+cd ../celestial-service
 aws cloudformation package --template-file cloudfront-template.yaml --output-template-file packaged.yaml --s3-bucket y-cf-midway
 aws cloudformation deploy --template-file packaged.yaml --stack-name $2-$1-stack --parameter-overrides ProjectName=$2 TargetEnvr=$1

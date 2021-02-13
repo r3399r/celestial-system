@@ -8,8 +8,8 @@ Parameters:
   ProjectName:
     Type: String
     AllowedValues:
-      - yy-aquarius
-      - yy-cancer
+      - sadalsuud
+      - altarf
 Resources:
   CloudFrontOriginAccessIdentity:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
