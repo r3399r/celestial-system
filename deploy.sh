@@ -38,6 +38,6 @@ npm run deploy:$1
 echo ==================================================================================
 
 echo deploy cloudfront...
-cd ../celestial-service
+cd ../celestial-system
 aws cloudformation package --template-file cloudfront-template.yaml --output-template-file packaged.yaml --s3-bucket y-cf-midway
 aws cloudformation deploy --template-file packaged.yaml --stack-name $2-$1-stack --parameter-overrides ProjectName=$2 TargetEnvr=$1
