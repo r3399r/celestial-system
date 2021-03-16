@@ -2,14 +2,12 @@ AWSTemplateFormatVersion: '2010-09-09'
 Parameters:
   TargetEnvr:
     Type: String
-    AllowedValues:
-      - dev
-      - prod
+    AllowedValues: [dev, prod]
   ProjectName:
     Type: String
     AllowedValues:
-      - sadalsuud
-      - altarf
+    - sadalsuud
+    - altarf
 Conditions: 
   IsProd: !Equals [ !Ref TargetEnvr, prod ]
 Resources:
@@ -26,25 +24,25 @@ Resources:
     Properties:
       Bucket: !Sub ${ProjectName}-${TargetEnvr}
       PolicyDocument: !Join
-        - ''
-        - - '{
-              "Version": "2012-10-17",
-              "Id": "PolicyForCloudFrontPrivateContent",
-              "Statement": [
-                  {
-                      "Sid": "Allow-OAI-Access-To-Bucket",
-                      "Effect": "Allow",
-                      "Principal": {
-                          "AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity '
-          - !Ref CloudFrontOriginAccessIdentity
-          - '" },
-                      "Action": "s3:GetObject",
-                      "Resource": "arn:aws:s3:::'
-          - !Sub ${ProjectName}-${TargetEnvr}
-          - '/*"
-                  }
-              ]
-            }'
+      - ''
+      - - '{
+            "Version": "2012-10-17",
+            "Id": "PolicyForCloudFrontPrivateContent",
+            "Statement": [
+                {
+                    "Sid": "Allow-OAI-Access-To-Bucket",
+                    "Effect": "Allow",
+                    "Principal": {
+                        "AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity '
+        - !Ref CloudFrontOriginAccessIdentity
+        - '" },
+                    "Action": "s3:GetObject",
+                    "Resource": "arn:aws:s3:::'
+        - !Sub ${ProjectName}-${TargetEnvr}
+        - '/*"
+                }
+            ]
+          }'
   CloudFrontOriginAccessIdentity:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
     Properties:
@@ -59,8 +57,8 @@ Resources:
       AliasTarget:
         HostedZoneId: Z2FDTNDATAQYW2
         DNSName: !GetAtt
-          - CloudFrontDistribution
-          - DomainName
+        - CloudFrontDistribution
+        - DomainName
   CloudFrontDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -70,33 +68,46 @@ Resources:
         - DomainName: !Sub ${ProjectName}-${TargetEnvr}.s3.ap-northeast-1.amazonaws.com
           Id: S3-hosted-website-ID
           S3OriginConfig:
-              OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
+            OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
+        - DomainName: !ImportValue 
+            'Fn::Sub': '${TargetEnvr}-APIGatewayEndpoint'
+          Id: !Sub ${TargetEnvr}-APIGatewayEndpoint-ID
+          OriginPath: !Sub /${TargetEnvr}
+          CustomOriginConfig:
+            HTTPPort: 80
+            HTTPSPort: 443
+            OriginKeepaliveTimeout: 5
+            OriginProtocolPolicy: https-only
         Enabled: 'true'
         HttpVersion: http2
         CustomErrorResponses:
-          - ErrorCachingMinTTL: 300
-            ErrorCode: 404
-            ResponseCode: 200
-            ResponsePagePath: /index.html
-          - ErrorCachingMinTTL: 300
-            ErrorCode: 403
-            ResponseCode: 200
-            ResponsePagePath: /index.html
+        - ErrorCachingMinTTL: 300
+          ErrorCode: 404
+          ResponseCode: 200
+          ResponsePagePath: /index.html
+        - ErrorCachingMinTTL: 300
+          ErrorCode: 403
+          ResponseCode: 200
+          ResponsePagePath: /index.html
         DefaultRootObject: index.html
         DefaultCacheBehavior:
-          AllowedMethods:
-          - DELETE
-          - GET
-          - HEAD
-          - OPTIONS
-          - PATCH
-          - POST
-          - PUT
+          AllowedMethods: [ "GET", "HEAD", "OPTIONS", "PUT", "PATCH", "POST", "DELETE"]
           TargetOriginId: S3-hosted-website-ID
           ForwardedValues:
             QueryString: 'false'
             Cookies:
               Forward: none
+          ViewerProtocolPolicy: redirect-to-https
+          DefaultTTL: 0
+          MinTTL: 0
+          MaxTTL: 0
+        CacheBehaviors:
+        - PathPattern: /api/*
+          AllowedMethods: [ "GET", "HEAD", "OPTIONS", "PUT", "PATCH", "POST", "DELETE"]
+          ForwardedValues:
+            Headers: [ "Authorization", "Accept" ]
+            QueryString: true
+          TargetOriginId: !Sub ${TargetEnvr}-APIGatewayEndpoint-ID
           ViewerProtocolPolicy: redirect-to-https
           DefaultTTL: 0
           MinTTL: 0
