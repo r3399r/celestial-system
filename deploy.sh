@@ -10,9 +10,9 @@ if [ $# -ne 2 ]
     exit 1
 fi
 
-if [ $1 != "dev" ] && [ $1 != "prod" ]
+if [ $1 != "dev" ] && [ $1 != "test" ] && [ $1 != "prod" ]
   then
-    echo "env should be dev or prod"
+    echo "env should be dev, test or prod"
     exit 1
 fi
 
@@ -31,16 +31,19 @@ echo ===========================================================================
 
 echo deploy lambda...
 cd ../celestial-service
-npm run deploy:$1
+npm run pre:deploy
+aws cloudformation package --template-file aws/cloudformation/template.yaml --output-template-file packaged.yaml --s3-bucket y-cf-midway
+aws cloudformation deploy --template-file packaged.yaml --stack-name celestial-service-$1-stack --parameter-overrides TargetEnvr=$1 --no-fail-on-empty-changeset
 echo ====================================================================================
 
 echo deploy infrastructure...
 cd ../celestial-system
 aws cloudformation package --template-file process-template.yaml --output-template-file packaged.yaml --s3-bucket y-cf-midway
-aws cloudformation deploy --template-file packaged.yaml --stack-name $2-$1-stack --parameter-overrides ProjectName=$2 TargetEnvr=$1
+aws cloudformation deploy --template-file packaged.yaml --stack-name $2-$1-stack --parameter-overrides ProjectName=$2 TargetEnvr=$1 --no-fail-on-empty-changeset
 echo ====================================================================================
 
 echo deploy web to s3...
 cd ../$2
-npm run deploy:$1
+npm run pre:deploy
+aws s3 sync ./dist s3://$2-$1 --delete --cache-control max-age=0
 echo ====================================================================================
