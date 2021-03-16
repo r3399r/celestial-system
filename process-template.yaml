@@ -1,0 +1,119 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  TargetEnvr:
+    Type: String
+    AllowedValues: [dev, prod]
+  ProjectName:
+    Type: String
+    AllowedValues:
+    - sadalsuud
+    - altarf
+Conditions: 
+  IsProd: !Equals [ !Ref TargetEnvr, prod ]
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${ProjectName}-${TargetEnvr}
+      WebsiteConfiguration:
+        ErrorDocument: error.html
+        IndexDocument: index.html
+  S3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    DependsOn: [CloudFrontOriginAccessIdentity]
+    Properties:
+      Bucket: !Sub ${ProjectName}-${TargetEnvr}
+      PolicyDocument: !Join
+      - ''
+      - - '{
+            "Version": "2012-10-17",
+            "Id": "PolicyForCloudFrontPrivateContent",
+            "Statement": [
+                {
+                    "Sid": "Allow-OAI-Access-To-Bucket",
+                    "Effect": "Allow",
+                    "Principal": {
+                        "AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity '
+        - !Ref CloudFrontOriginAccessIdentity
+        - '" },
+                    "Action": "s3:GetObject",
+                    "Resource": "arn:aws:s3:::'
+        - !Sub ${ProjectName}-${TargetEnvr}
+        - '/*"
+                }
+            ]
+          }'
+  CloudFrontOriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: !Sub ${ProjectName}-${TargetEnvr}-OAI
+  Route53RecordSet:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: lucky-star-trip.net.
+      Name: !If [IsProd, www.lucky-star-trip.net., !Sub '${TargetEnvr}.lucky-star-trip.net.']
+      Type: A
+      AliasTarget:
+        HostedZoneId: Z2FDTNDATAQYW2
+        DNSName: !GetAtt
+        - CloudFrontDistribution
+        - DomainName
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Aliases: [!If [IsProd, www.lucky-star-trip.net, !Sub '${TargetEnvr}.lucky-star-trip.net']]
+        Origins:
+        - DomainName: !Sub ${ProjectName}-${TargetEnvr}.s3.ap-northeast-1.amazonaws.com
+          Id: S3-hosted-website-ID
+          S3OriginConfig:
+            OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
+        - DomainName: !ImportValue 
+            'Fn::Sub': '${TargetEnvr}-APIGatewayEndpoint'
+          Id: !Sub ${TargetEnvr}-APIGatewayEndpoint-ID
+          OriginPath: !Sub /${TargetEnvr}
+          CustomOriginConfig:
+            HTTPPort: 80
+            HTTPSPort: 443
+            OriginKeepaliveTimeout: 5
+            OriginProtocolPolicy: https-only
+        Enabled: 'true'
+        HttpVersion: http2
+        CustomErrorResponses:
+        - ErrorCachingMinTTL: 300
+          ErrorCode: 404
+          ResponseCode: 200
+          ResponsePagePath: /index.html
+        - ErrorCachingMinTTL: 300
+          ErrorCode: 403
+          ResponseCode: 200
+          ResponsePagePath: /index.html
+        DefaultRootObject: index.html
+        DefaultCacheBehavior:
+          AllowedMethods: [ "GET", "HEAD", "OPTIONS", "PUT", "PATCH", "POST", "DELETE"]
+          TargetOriginId: S3-hosted-website-ID
+          ForwardedValues:
+            QueryString: 'false'
+            Cookies:
+              Forward: none
+          ViewerProtocolPolicy: redirect-to-https
+          DefaultTTL: 0
+          MinTTL: 0
+          MaxTTL: 0
+        CacheBehaviors:
+        - PathPattern: /api/*
+          AllowedMethods: [ "GET", "HEAD", "OPTIONS", "PUT", "PATCH", "POST", "DELETE"]
+          ForwardedValues:
+            Headers: [ "Authorization", "Accept" ]
+            QueryString: true
+          TargetOriginId: !Sub ${TargetEnvr}-APIGatewayEndpoint-ID
+          ViewerProtocolPolicy: redirect-to-https
+          DefaultTTL: 0
+          MinTTL: 0
+          MaxTTL: 0
+        PriceClass: PriceClass_200
+        ViewerCertificate:
+          AcmCertificateArn: arn:aws:acm:us-east-1:278497686406:certificate/37c79ed4-212a-4920-b9cf-dc9b0b04fda8
+          MinimumProtocolVersion: TLSv1
+          SslSupportMethod: sni-only
