@@ -1,6 +1,6 @@
 # celestial-system
 
-這裡放各個網站的部署腳本，只需再 command line 輸入 `bash deploy.sh {env} {project}` 即可完成網站部署
+這裡放各個網站的部署腳本，只需在 command line 輸入 `bash deploy.sh {env} {project}` 即可完成網站部署
 
 彙整目前的網站
 
