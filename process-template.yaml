@@ -2,14 +2,13 @@ AWSTemplateFormatVersion: '2010-09-09'
 Parameters:
   TargetEnvr:
     Type: String
-    AllowedValues: [dev, test, prod]
   ProjectName:
     Type: String
-    AllowedValues:
-    - sadalsuud
-    - altarf
+  HostName:
+    Type: String
 Conditions: 
   IsProd: !Equals [ !Ref TargetEnvr, prod ]
+  HasHostName: !Not [!Equals [ !Ref HostName, '' ]]
 Resources:
   S3Bucket:
     Type: AWS::S3::Bucket
@@ -50,9 +49,10 @@ Resources:
         Comment: !Sub ${ProjectName}-${TargetEnvr}-OAI
   Route53RecordSet:
     Type: AWS::Route53::RecordSet
+    Condition: HasHostName
     Properties:
-      HostedZoneName: lucky-star-trip.net.
-      Name: !If [IsProd, www.lucky-star-trip.net., !Sub '${TargetEnvr}.lucky-star-trip.net.']
+      HostedZoneName: !Sub '${HostName}.'
+      Name: !If [IsProd, !Sub 'www.${HostName}.', !Sub '${TargetEnvr}.${HostName}.']
       Type: A
       AliasTarget:
         HostedZoneId: Z2FDTNDATAQYW2
@@ -63,7 +63,7 @@ Resources:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
-        Aliases: [!If [IsProd, www.lucky-star-trip.net, !Sub '${TargetEnvr}.lucky-star-trip.net']]
+        Aliases: !If [HasHostName, [!If [IsProd, !Sub 'www.${HostName}', !Sub '${TargetEnvr}.${HostName}']], []]
         Origins:
         - DomainName: !Sub ${ProjectName}-${TargetEnvr}.s3.ap-northeast-1.amazonaws.com
           Id: S3-hosted-website-ID

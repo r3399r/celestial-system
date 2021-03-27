@@ -18,10 +18,16 @@ fi
 
 
 if [ $2 != "sadalsuud" ] && 
-   [ $2 != "altarf" ]
+   [ $2 != "altarf" ] &&
+   [ $2 != "toliman"]
   then
     echo "project does not exist"
     exit 1
+fi
+
+if [ $2 = "sadalsuud" ];
+  then
+    host="lucky-star-trip.net"
 fi
 
 echo ====================================================================================
@@ -39,7 +45,7 @@ echo ===========================================================================
 echo deploy infrastructure...
 cd ../celestial-system
 aws cloudformation package --template-file process-template.yaml --output-template-file packaged.yaml --s3-bucket y-cf-midway
-aws cloudformation deploy --template-file packaged.yaml --stack-name $2-$1-stack --parameter-overrides ProjectName=$2 TargetEnvr=$1 --no-fail-on-empty-changeset
+aws cloudformation deploy --template-file packaged.yaml --stack-name $2-$1-stack --parameter-overrides ProjectName=$2 TargetEnvr=$1 HostName=$host --no-fail-on-empty-changeset
 echo ====================================================================================
 
 echo deploy web to s3...
