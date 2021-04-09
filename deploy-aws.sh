@@ -16,10 +16,8 @@ if [ $1 != "dev" ] && [ $1 != "test" ] && [ $1 != "prod" ]
     exit 1
 fi
 
-
 if [ $2 != "sadalsuud" ] && 
-   [ $2 != "altarf" ] &&
-   [ $2 != "toliman"]
+   [ $2 != "altarf" ]
   then
     echo "project does not exist"
     exit 1
