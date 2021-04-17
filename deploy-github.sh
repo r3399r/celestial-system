@@ -26,7 +26,5 @@ cd ../$1
 git checkout master
 git pull
 npm run pre:deploy
-git add .
-git commit -m "auto deploy $timestamp"
-git push
+npm run deploy
 echo ====================================================================================
