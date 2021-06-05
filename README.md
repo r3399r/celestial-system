@@ -12,7 +12,7 @@
 | [altarf](https://github.com/r3399r/altarf)                   | 巨蟹座β   | 終點/邊界              | 輔助教學網站     | 巨蟹有謙虛實在的學習態度   |
 | [sadalsuud](https://github.com/r3399r/sadalsuud)             | 水瓶座β   | 最幸運的幸運           | 星遊網站         | 水瓶愛好和平，主張人人平等 |
 | [spica](https://github.com/r3399r/spica)                     | 處女座α   | 處女手中的麥穗         | 多人分帳程式     | 處女喜歡記帳(?)            |
-| [pollux](https://github.com/r3399r/pollux)                   | 雙子座β   | 雙胞胎之一，有不死之身 | 自學網站         | 雙子聰明伶俐，頭腦靈活     |
+| [pollux](https://github.com/r3399r/pollux)                   | 雙子座β   | 雙胞胎之一，有不死之身 | 刷題網站         | 雙子聰明伶俐，頭腦靈活     |
 | [toliman](https://github.com/r3399r/toliman)                 | 半人馬座α | 鴕鳥                   | 數學排版網站     | 半人馬很聰明               |
 | [aldebaran](https://github.com/r3399r/aldebaran)             | 金牛座α   | 追隨著明亮者           | 樂透分析網站     | 金牛不是冷血，只是理性過度 |
 | [algedi](https://github.com/r3399r/algedi)                   | 摩羯座α   | 小山羊或小朋友         | 個股觀察程式     | 魔羯腳踏實地，刻苦耐勞     |
