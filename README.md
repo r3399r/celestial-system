@@ -17,7 +17,7 @@
 | [spica](https://github.com/r3399r/spica)                     | 處女座α   | 處女手中的麥穗         | 多人分帳程式     | 處女喜歡記帳(?)                        |
 | [toliman](https://github.com/r3399r/toliman)                 | 半人馬座α | 鴕鳥                   | 數學排版網站     | 半人馬很聰明                           |
 | [rukbat](https://github.com/r3399r/rukbat)                   | 射手座α   | 膝蓋                   | 家教媒合平台     | 射手愛好自由自在的生活                 |
-| [vega](https://github.com/r3399r/vega)                       | 天琴座α   | 掉落或著陸             | 存股清單         | 天琴座是由發明與商業之神 Hermes 所發明 |
+| [vega](https://github.com/r3399r/vega)                       | 天琴座α   | 掉落或著陸             | 會長存股清單     | 天琴座是由發明與商業之神 Hermes 所發明 |
 
 各網站的開發進度不一，會隨時更新在 project: [celestial-webapp](https://github.com/users/r3399r/projects/2)
 
