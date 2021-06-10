@@ -86,5 +86,5 @@ cd ../$2
 git checkout master
 git pull
 npm run pre:deploy
-aws s3 sync ./dist s3://$2-$1 --delete --cache-control max-age=0
+aws s3 sync ./dist s3://$2-$1 --delete --cache-control no-cache
 echo ====================================================================================
