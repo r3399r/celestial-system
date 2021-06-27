@@ -69,8 +69,8 @@ cd ../celestial-service
 git checkout master
 git pull
 npm run pre:deploy
-aws cloudformation package --template-file aws/cloudformation/template.yaml --output-template-file packaged.yaml --s3-bucket y-cf-midway
-aws cloudformation deploy --template-file packaged.yaml --stack-name celestial-service-$1-stack --parameter-overrides TargetEnvr=$1 --no-fail-on-empty-changeset
+aws cloudformation package --template-file aws/cloudformation/$2-template.yaml --output-template-file packaged.yaml --s3-bucket y-cf-midway
+aws cloudformation deploy --template-file packaged.yaml --stack-name celestial-$2-$1-stack --parameter-overrides TargetEnvr=$1 --no-fail-on-empty-changeset
 echo ====================================================================================
 
 echo deploy infrastructure...

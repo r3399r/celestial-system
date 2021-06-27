@@ -72,8 +72,8 @@ Resources:
           S3OriginConfig:
             OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
         - DomainName: !ImportValue 
-            'Fn::Sub': '${TargetEnvr}-APIGatewayEndpoint'
-          Id: !Sub ${TargetEnvr}-APIGatewayEndpoint-ID
+            'Fn::Sub': '${ProjectName}-${TargetEnvr}-ApiEndpoint'
+          Id: !Sub ${ProjectName}-${TargetEnvr}-ApiEndpoint-ID
           OriginPath: !Sub /${TargetEnvr}
           CustomOriginConfig:
             HTTPPort: 80
@@ -109,7 +109,7 @@ Resources:
           ForwardedValues:
             Headers: [ "Authorization", "Accept" ]
             QueryString: true
-          TargetOriginId: !Sub ${TargetEnvr}-APIGatewayEndpoint-ID
+          TargetOriginId: !Sub ${ProjectName}-${TargetEnvr}-ApiEndpoint-ID
           ViewerProtocolPolicy: redirect-to-https
           DefaultTTL: 0
           MinTTL: 0
@@ -130,8 +130,8 @@ Resources:
           S3OriginConfig:
             OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
         - DomainName: !ImportValue 
-            'Fn::Sub': '${TargetEnvr}-APIGatewayEndpoint'
-          Id: !Sub ${TargetEnvr}-APIGatewayEndpoint-ID
+            'Fn::Sub': '${ProjectName}-${TargetEnvr}-ApiEndpoint'
+          Id: !Sub ${ProjectName}-${TargetEnvr}-ApiEndpoint-ID
           OriginPath: !Sub /${TargetEnvr}
           CustomOriginConfig:
             HTTPPort: 80
@@ -167,7 +167,7 @@ Resources:
           ForwardedValues:
             Headers: [ "Authorization", "Accept" ]
             QueryString: true
-          TargetOriginId: !Sub ${TargetEnvr}-APIGatewayEndpoint-ID
+          TargetOriginId: !Sub ${ProjectName}-${TargetEnvr}-ApiEndpoint-ID
           ViewerProtocolPolicy: redirect-to-https
           DefaultTTL: 0
           MinTTL: 0
