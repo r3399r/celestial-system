@@ -9,7 +9,6 @@
 | Project                                                      | Star      | Meaning                | Purpose          | 選用原因                               |
 | ------------------------------------------------------------ | --------- | ---------------------- | ---------------- | -------------------------------------- |
 | [celestial-service](https://github.com/r3399r/celestial-service) | -         | celestial: 天空的      | 全網站的共同後端 | -                                      |
-| [aldebaran](https://github.com/r3399r/aldebaran)             | 金牛座α   | 追隨著明亮者           | 樂透分析網站     | 金牛不是冷血，只是理性過度             |
 | [algedi](https://github.com/r3399r/algedi)                   | 摩羯座α   | 小山羊或小朋友         | 個股觀察程式     | 魔羯腳踏實地，刻苦耐勞                 |
 | [altarf](https://github.com/r3399r/altarf)                   | 巨蟹座β   | 終點/邊界              | 輔助教學網站     | 巨蟹有謙虛實在的學習態度               |
 | [pollux](https://github.com/r3399r/pollux)                   | 雙子座β   | 雙胞胎之一，有不死之身 | 刷題網站         | 雙子聰明伶俐，頭腦靈活                 |
