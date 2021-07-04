@@ -66,8 +66,11 @@ fi
 
 echo deploy lambda...
 cd ../celestial-service
-git checkout master
-git pull
+if [ $1 = "prod" ]
+  then
+    git checkout master
+    git pull
+fi
 npm run pre:deploy
 aws cloudformation package --template-file aws/cloudformation/$2-template.yaml --output-template-file packaged.yaml --s3-bucket y-cf-midway
 aws cloudformation deploy --template-file packaged.yaml --stack-name celestial-$2-$1-stack --parameter-overrides TargetEnvr=$1 --no-fail-on-empty-changeset
@@ -75,16 +78,22 @@ echo ===========================================================================
 
 echo deploy infrastructure...
 cd ../celestial-system
-git checkout master
-git pull
+if [ $1 = "prod" ]
+  then
+    git checkout master
+    git pull
+fi
 aws cloudformation package --template-file process-template.yaml --output-template-file packaged.yaml --s3-bucket y-cf-midway
 aws cloudformation deploy --template-file packaged.yaml --stack-name $2-$1-stack --parameter-overrides ProjectName=$2 TargetEnvr=$1 HostName=$host --no-fail-on-empty-changeset
 echo ====================================================================================
 
 echo deploy web to s3...
 cd ../$2
-git checkout master
-git pull
+if [ $1 = "prod" ]
+  then
+    git checkout master
+    git pull
+fi
 npm run pre:deploy
 aws s3 sync ./dist s3://$2-$1 --delete --cache-control no-cache
 echo ====================================================================================
